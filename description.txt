@@ -1,0 +1,31 @@
+[h2]How to use it:[/h2]
+[*][b]Setup:[/b] 
+Go to Settings > Controls > Scroll down to the "Mod Controls" section and find "Auto Summon" and click Toggle UI and press a key to set the keybind.
+[img]https://i.imgur.com/vzwUR7F.png[/img]
+
+[*][b]How to use auto-summon:[/b]
+Just simply press the keybind, add your summon/sentry items to the corresponding slots and press the +1 or fill buttons.
+[img]https://i.imgur.com/fl2Nk5f.gif[/img]
+
+[*][b]Top left button:[/b]
+The top left button will refresh your summons. 
+[img]https://i.imgur.com/Bvbiaov.gif[/img]
+
+[*][b]Top right button:[/b]
+The top right button will toggle a function that will respawn a sentry when it goes off screen.
+[img]https://i.imgur.com/aQhesby.gif[/img]
+
+There is a slight issue that when you spawn certain minions that are supposed to be around a center point they can overlap on top of each other so it looks like you have one minion but you do not.
+A great example of this is the Virid Vanguard in Calamity mod. 
+I do not care to fix this since its purely visual and the minions will attack like they normally do. 
+The reason this happens is because I use a different summoning method than the other summon mods. 
+The others will typically put the staff in your hand, summon, and then swap back to the other weapon suuuper fast so you dont see it happen, but my mod summons the minions and then gives you ownership of them so it doesn't cause any weird glitches such as Lan's auto summon where it duplicates items.
+
+
+My discord is .kunaii (MAKE SURE TO INCLUDE THE .) so if you have any suggestions or something is broken let me know.
+
+Credit:
+I would like to thank Lan for his old auto summon mod and abluescarab for his custom item slot code.
+I would not have been able to make this mod without them making their code open source.
+I do use a different method of summong than Lan does but his code was a major help.
+I honestly just made this because i wanted to play on a server with Lan's mod but the server wouldn't let it on there because it wasn't updated... enjoy?

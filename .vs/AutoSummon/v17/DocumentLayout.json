@@ -1,0 +1,157 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|c:\\users\\gyara\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\autosummon\\autosummonplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|solutionrelative:autosummonplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|c:\\users\\gyara\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\autosummon\\autosummonsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|solutionrelative:autosummonsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|c:\\users\\gyara\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\autosummon\\croppedtexture2d.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|solutionrelative:croppedtexture2d.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|c:\\users\\gyara\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\autosummon\\customeventargs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|solutionrelative:customeventargs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|c:\\users\\gyara\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\autosummon\\customitemslot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|solutionrelative:customitemslot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|c:\\users\\gyara\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\autosummon\\draggableuipanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|solutionrelative:draggableuipanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|c:\\users\\gyara\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\autosummon\\autosummon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DF6ED2D1-AED9-4F71-A49D-03812E93619A}|AutoSummon.csproj|solutionrelative:autosummon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModConfigs\\AutoSummonPanels.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CroppedTexture2D.cs",
+              "DocumentMoniker": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\CroppedTexture2D.cs",
+              "RelativeDocumentMoniker": "CroppedTexture2D.cs",
+              "ToolTip": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\CroppedTexture2D.cs",
+              "RelativeToolTip": "CroppedTexture2D.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-26T21:09:46.09Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CustomEventArgs.cs",
+              "DocumentMoniker": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\CustomEventArgs.cs",
+              "RelativeDocumentMoniker": "CustomEventArgs.cs",
+              "ToolTip": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\CustomEventArgs.cs",
+              "RelativeToolTip": "CustomEventArgs.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-26T21:09:44.041Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CustomItemSlot.cs",
+              "DocumentMoniker": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\CustomItemSlot.cs",
+              "RelativeDocumentMoniker": "CustomItemSlot.cs",
+              "ToolTip": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\CustomItemSlot.cs",
+              "RelativeToolTip": "CustomItemSlot.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABwAAABCAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-26T21:09:38.131Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AutoSummonPanels.json",
+              "DocumentMoniker": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModConfigs\\AutoSummonPanels.json",
+              "RelativeDocumentMoniker": "..\\..\\ModConfigs\\AutoSummonPanels.json",
+              "ToolTip": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModConfigs\\AutoSummonPanels.json",
+              "RelativeToolTip": "..\\..\\ModConfigs\\AutoSummonPanels.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAATAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-01-25T20:42:02.851Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AutoSummon.cs",
+              "DocumentMoniker": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\AutoSummon.cs",
+              "RelativeDocumentMoniker": "AutoSummon.cs",
+              "ToolTip": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\AutoSummon.cs",
+              "RelativeToolTip": "AutoSummon.cs",
+              "ViewState": "AQIAADIAAAAAAAAAAAAwwD0AAABUAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-25T20:13:54.163Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DraggableUIPanel.cs",
+              "DocumentMoniker": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\DraggableUIPanel.cs",
+              "RelativeDocumentMoniker": "DraggableUIPanel.cs",
+              "ToolTip": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\DraggableUIPanel.cs",
+              "RelativeToolTip": "DraggableUIPanel.cs",
+              "ViewState": "AQIAAHgAAAAAAAAAAADgv48AAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-25T20:11:33.799Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AutoSummonPlayer.cs",
+              "DocumentMoniker": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\AutoSummonPlayer.cs",
+              "RelativeDocumentMoniker": "AutoSummonPlayer.cs",
+              "ToolTip": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\AutoSummonPlayer.cs",
+              "RelativeToolTip": "AutoSummonPlayer.cs",
+              "ViewState": "AQIAADwAAAAAAAAAAADgv1AAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-25T20:11:32.407Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AutoSummonSystem.cs",
+              "DocumentMoniker": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\AutoSummonSystem.cs",
+              "RelativeDocumentMoniker": "AutoSummonSystem.cs",
+              "ToolTip": "C:\\Users\\gyara\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AutoSummon\\AutoSummonSystem.cs",
+              "RelativeToolTip": "AutoSummonSystem.cs",
+              "ViewState": "AQIAADcAAAAAAAAAAAArwEEAAABAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-25T20:11:31.442Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

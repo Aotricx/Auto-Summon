@@ -1,0 +1,3 @@
+displayName = Auto Summon (Updated)
+author = Kunaii
+version = 2.0
