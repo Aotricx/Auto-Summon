@@ -5,6 +5,7 @@ Go to Settings > Controls > Scroll down to the "Mod Controls" section and find "
 
 [*][b]How to use auto-summon:[/b]
 Just simply press the keybind, add your summon/sentry items to the corresponding slots and press the +1 or fill buttons.
+If you press on fill and you gain more minion slots, they will auto re-deploy to fill the slots
 [img]https://i.imgur.com/fl2Nk5f.gif[/img]
 
 [*][b]Top left button:[/b]
