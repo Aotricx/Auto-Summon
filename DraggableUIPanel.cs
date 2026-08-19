@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using Terraria.ID;
 using System.Linq;
 using Terraria.GameContent;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Humanizer;
 using ReLogic.Content;
 
@@ -588,7 +587,7 @@ namespace AutoSummon.UI
 
                 // Calculate the remaining available slots for this panel
                 int remainingSlots = maxMinions - (totalUsedMinionSlots - currentQuantity);
-                int newQuantity = Math.Min(remainingSlots, maxMinions);
+                int newQuantity = Math.Clamp(remainingSlots, 0, maxMinions);
 
                 // Update the panel's quantity if it has changed
                 if (newQuantity != currentQuantity)
@@ -611,7 +610,7 @@ namespace AutoSummon.UI
 
                 // Calculate the remaining available slots for this panel
                 int remainingSlots = maxSentries - (totalUsedSentrySlots - currentQuantity);
-                int newQuantity = Math.Min(remainingSlots, maxSentries);
+                int newQuantity = Math.Clamp(remainingSlots, 0, maxSentries);
 
                 // Update the panel's quantity if it has changed
                 if (newQuantity != currentQuantity)
@@ -1088,6 +1087,7 @@ namespace AutoSummon.UI
         {
             var panel = sentryPanels[index];
             var data = panel.GetTag<InteractionPanelData>();
+            bool panelRemoved = false;
 
             if (item != null && !item.IsAir && IsSentrySummoningItem(item)) // Ensure it's a valid sentry item
             {
@@ -1137,6 +1137,9 @@ namespace AutoSummon.UI
 
                 sentryPanels.RemoveAt(index);
                 mainPanel.RemoveChild(panel);
+                lastItemStates.Remove(data.ItemSlot);
+                panel.RemoveTag();
+                panelRemoved = true;
 
                 // Recalculate positions of remaining panels
                 for (int i = 0; i < sentryPanels.Count; i++)
@@ -1147,7 +1150,10 @@ namespace AutoSummon.UI
             }
             UpdateMainPanelHeight();
             RefreshSummons();
-            lastItemStates[data.ItemSlot] = item?.Clone();
+            if (!panelRemoved)
+            {
+                lastItemStates[data.ItemSlot] = item?.Clone();
+            }
         }
 
         /// <summary>
@@ -1250,6 +1256,7 @@ namespace AutoSummon.UI
         {
             var panel = interactionPanels[index];
             var data = panel.GetTag<InteractionPanelData>();
+            bool panelRemoved = false;
 
             if (item != null && !item.IsAir && IsMinionSummoningItem(item)) // Ensure it's a valid minion item
             {
@@ -1301,6 +1308,9 @@ namespace AutoSummon.UI
 
                 interactionPanels.RemoveAt(index);
                 mainPanel.RemoveChild(panel);
+                lastItemStates.Remove(data.ItemSlot);
+                panel.RemoveTag();
+                panelRemoved = true;
 
                 // Recalculate positions of remaining panels
                 for (int i = 0; i < interactionPanels.Count; i++)
@@ -1312,7 +1322,10 @@ namespace AutoSummon.UI
                 UpdateMainPanelHeight();
             }
             RefreshSummons();
-            lastItemStates[data.ItemSlot] = item?.Clone();
+            if (!panelRemoved)
+            {
+                lastItemStates[data.ItemSlot] = item?.Clone();
+            }
             RecalculateSentryPanelPositions();
         }
 
@@ -1415,7 +1428,7 @@ namespace AutoSummon.UI
                 int maxSlots = isSentryPanel ? player.maxTurrets : player.maxMinions;
                 int totalUsedSlots = isSentryPanel ? GetTotalSentries() : GetTotalMinions();
                 int remainingSlots = maxSlots - (totalUsedSlots - currentQuantity);
-                int newQuantity = Math.Min(remainingSlots, maxSlots);
+                int newQuantity = Math.Clamp(remainingSlots, 0, maxSlots);
 
                 data.QuantityLabel.SetText($"{(isSentryPanel ? "Sentries" : "Minions")}: {newQuantity}");
                 data.FillButton.SetText("Unfill"); // Update button label
@@ -1446,10 +1459,18 @@ namespace AutoSummon.UI
             foreach (var panel in interactionPanels)
             {
                 mainPanel.RemoveChild(panel);
+                var data = panel.GetTag<InteractionPanelData>();
+                if (data?.ItemSlot != null)
+                    lastItemStates.Remove(data.ItemSlot);
+                panel.RemoveTag();
             }
             foreach (var panel in sentryPanels)
             {
                 mainPanel.RemoveChild(panel);
+                var data = panel.GetTag<InteractionPanelData>();
+                if (data?.ItemSlot != null)
+                    lastItemStates.Remove(data.ItemSlot);
+                panel.RemoveTag();
             }
             interactionPanels.Clear();
             sentryPanels.Clear();
@@ -1739,6 +1760,14 @@ namespace AutoSummon.UI
         /// <returns>The tag value, or default(T) if not found or wrong type.</returns>
         public static T GetTag<T>(this UIElement element) =>
             Tags.TryGetValue(element, out var tag) && tag is T value ? value : default;
+
+        /// <summary>
+        /// Removes a tag from a UIElement. Must be called when a panel is discarded, since
+        /// this dictionary is static and otherwise keeps every removed panel (and everything
+        /// it references - item slots, buttons, items) alive for the rest of the game session.
+        /// </summary>
+        /// <param name="element">The UI element to remove the tag from.</param>
+        public static void RemoveTag(this UIElement element) => Tags.Remove(element);
     }
 
 

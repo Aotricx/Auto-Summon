@@ -21,7 +21,6 @@ namespace AutoSummon
     /// This class is used in the following locations:
     /// - AutoSummonSystem.cs line: 27 (GetModPlayer to access player data)
     /// - AutoSummonSystem.cs line: 30-32 (checks tempSummonDisabled flag)
-    /// - AutoSummonSystem.cs line: 51-58 (accesses MinionItems, SentryItems)
     /// - DraggableUIPanel.cs line: 256 (GetModPlayer in shouldSummon)
     /// - DraggableUIPanel.cs line: 483 (TriggerSave static method)
     /// </remarks>
@@ -56,42 +55,6 @@ namespace AutoSummon
         public bool respawnSentriesEnabled = DraggableUIPanel.respawnSentriesEnabled;
 
         /// <summary>
-        /// Total minion quantity (used by AutoSummonSystem for maintenance).
-        /// </summary>
-        /// <remarks>
-        /// Used in:
-        /// - AutoSummonSystem.cs line: 51, 103, 107 (MaintainMinions)
-        /// </remarks>
-        public int MinionQuantity = 0;
-
-        /// <summary>
-        /// Total sentry quantity (used by AutoSummonSystem for maintenance).
-        /// </summary>
-        /// <remarks>
-        /// Used in:
-        /// - AutoSummonSystem.cs line: 56 (MaintainSentries)
-        /// </remarks>
-        public int SentryQuantity = 0;
-
-        /// <summary>
-        /// List of minion items configured by the player.
-        /// </summary>
-        /// <remarks>
-        /// Used in:
-        /// - AutoSummonSystem.cs line: 51, 101 (MaintainMinions)
-        /// </remarks>
-        public List<Item> MinionItems = new();
-
-        /// <summary>
-        /// List of sentry items configured by the player.
-        /// </summary>
-        /// <remarks>
-        /// Used in:
-        /// - AutoSummonSystem.cs line: 56, 143 (MaintainSentries)
-        /// </remarks>
-        public List<Item> SentryItems = new();
-
-        /// <summary>
         /// Saved minion panel data (persisted with player file using TagCompound).
         /// </summary>
         private List<SavedItemData> savedMinionPanels = new();
@@ -106,17 +69,10 @@ namespace AutoSummon
         /// </summary>
         /// <remarks>
         /// This function:
-        /// - Clears MinionItems and SentryItems lists
-        /// - Resets MinionQuantity and SentryQuantity to 0
         /// - Creates new empty lists for savedMinionPanels and savedSentryPanels
         /// </remarks>
         public override void Initialize()
         {
-            // Initialize fields
-            MinionItems.Clear();
-            SentryItems.Clear();
-            MinionQuantity = 0;
-            SentryQuantity = 0;
             savedMinionPanels = new();
             savedSentryPanels = new();
         }
@@ -234,7 +190,8 @@ namespace AutoSummon
         /// </summary>
         /// <remarks>
         /// This function:
-        /// - Clears existing savedMinionPanels and savedSentryPanels
+        /// - Leaves savedMinionPanels/savedSentryPanels untouched if the UI panel instance
+        ///   isn't available yet, so a transient null never wipes out previously-saved data
         /// - Iterates through all interactionPanels (minions) and sentryPanels
         /// - For each panel with a valid item, extracts the item and quantity
         /// - Clones items to preserve all data (prefix, mod data, etc.)
@@ -246,12 +203,12 @@ namespace AutoSummon
         /// </remarks>
         private void CollectPanelData()
         {
-            savedMinionPanels.Clear();
-            savedSentryPanels.Clear();
-
             var draggableUIPanel = AutoSummon.DraggableUIPanelInstance;
             if (draggableUIPanel == null)
-                return;
+                return; // UI isn't available - keep whatever was last saved/loaded instead of erasing it
+
+            savedMinionPanels.Clear();
+            savedSentryPanels.Clear();
 
             // Collect minion panel data
             foreach (var panel in draggableUIPanel.interactionPanels)
@@ -407,7 +364,9 @@ namespace AutoSummon
         /// </summary>
         /// <remarks>
         /// This function:
-        /// - Only runs for the local player
+        /// - Only runs for the local player (same identity check as SaveData - PlayerDisconnect
+        ///   fires on the server and on remote clients, so whoAmI alone isn't a reliable enough
+        ///   check for "this is actually my own character")
         /// - Calls CollectPanelData() to ensure data is saved before disconnecting
         ///
         /// Called automatically by tModLoader when player disconnects.
@@ -417,7 +376,7 @@ namespace AutoSummon
             base.PlayerDisconnect();
 
             // Collect panel data before disconnecting so it's saved properly
-            if (Player.whoAmI == Main.myPlayer)
+            if (Player.whoAmI == Main.myPlayer && Main.LocalPlayer == Player)
             {
                 CollectPanelData();
             }
@@ -611,7 +570,11 @@ namespace AutoSummon
         /// This function:
         /// - Gets the DraggableUIPanel instance
         /// - Kills all off-screen sentries owned by the player
-        /// - Resummons sentries based on the configured sentry panels
+        /// - Tops up each panel's configured sentry type only up to its own configured
+        ///   quantity (counting sentries of that specific projectile type that are still
+        ///   alive on-screen), rather than blindly resummoning the full configured amount -
+        ///   otherwise every off-screen refresh would keep stacking extra sentries on top
+        ///   of the ones that were never killed
         ///
         /// Called from:
         /// - PostUpdate() in this file line: 512 (when sentry is detected off-screen)
@@ -647,16 +610,21 @@ namespace AutoSummon
                     continue;
 
                 var summonItem = data.ItemSlot.Item;
-                int quantity = int.Parse(data.QuantityLabel.Text.Replace("Sentries: ", ""));
+                if (!int.TryParse(data.QuantityLabel.Text.Replace("Sentries: ", ""), out int quantity))
+                    continue;
 
-                for (int i = 0; i < quantity; i++)
+                // Only replace what's missing for this specific sentry type, not the full quantity
+                int aliveOfType = 0;
+                foreach (var proj in Main.projectile)
+                {
+                    if (proj.active && proj.owner == player.whoAmI && proj.sentry && proj.type == summonItem.shoot)
+                        aliveOfType++;
+                }
+
+                for (int i = aliveOfType; i < quantity; i++)
                 {
                     AutoSummonSystem.SummonWithItem(player, summonItem);
                 }
-            }
-
-            if (Main.LocalPlayer == player) // Only show text for the local player
-            {
             }
         }
 

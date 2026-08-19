@@ -47,8 +47,9 @@ namespace AutoSummon
         /// - Checks if player is dead, ghost, or summon is disabled - returns early if so
         /// - Detects changes in maxMinions and calls HandleSlotChange for minion panels
         /// - Detects changes in maxTurrets and calls HandleSlotChange for sentry panels
-        /// - Calls MaintainMinions if player has MinionItems configured
-        /// - Calls MaintainSentries if player has SentryItems configured
+        /// - Calls MaintainMinions/MaintainSentries to replenish anything configured in the
+        ///   UI panels that died mid-game (the panels are the source of truth for what's
+        ///   configured, not any per-player quantity field)
         ///
         /// Called automatically by tModLoader every frame.
         /// </remarks>
@@ -78,15 +79,14 @@ namespace AutoSummon
                 HandleSlotChange(draggableUIPanel.sentryPanels, player.maxTurrets, draggableUIPanel.GetTotalSentries());
             }
 
-            // Optional: Handle resummon logic here (already in place for minions/sentries)
-            if (autoSummonPlayer.MinionItems.Count > 0 && player.maxMinions > 0)
+            if (player.maxMinions > 0)
             {
-                MaintainMinions(player, autoSummonPlayer);
+                MaintainMinions(player, draggableUIPanel);
             }
 
-            if (autoSummonPlayer.SentryItems.Count > 0 && player.maxTurrets > 0)
+            if (player.maxTurrets > 0)
             {
-                MaintainSentries(player, autoSummonPlayer);
+                MaintainSentries(player, draggableUIPanel);
             }
         }
 
@@ -120,7 +120,7 @@ namespace AutoSummon
                     // Recalculate the new quantity for the panel
                     int currentQuantity = int.Parse(data.QuantityLabel.Text.Replace("Minions: ", "").Replace("Sentries: ", ""));
                     int remainingSlots = maxSlots - (totalUsedSlots - currentQuantity);
-                    int newQuantity = Math.Min(remainingSlots, maxSlots);
+                    int newQuantity = Math.Clamp(remainingSlots, 0, maxSlots);
 
                     // Update the panel's quantity
                     data.QuantityLabel.SetText($"{(panels == AutoSummon.DraggableUIPanelInstance.sentryPanels ? "Sentries" : "Minions")}: {newQuantity}");
@@ -135,106 +135,129 @@ namespace AutoSummon
         /// Maintains minion counts by summoning more if slots are available.
         /// </summary>
         /// <param name="player">The player whose minions to maintain.</param>
-        /// <param name="autoSummonPlayer">The AutoSummonPlayer data for this player.</param>
+        /// <param name="draggableUIPanel">The UI panel holding the configured minion items/quantities.</param>
         /// <remarks>
         /// This function:
-        /// - Calculates current minion slots used by counting active minion projectiles
-        /// - For each item in MinionItems, summons more if slots are available
-        /// - Recalculates slots after each summon to prevent over-summoning
+        /// - Reads configured items/quantities directly from interactionPanels (the source of
+        ///   truth for what the player configured), per item type
+        /// - For each panel, tops up only the shortfall between the configured quantity and
+        ///   how many of that specific projectile type are currently alive
+        /// - Stops once player.maxMinions worth of minion slots are in use
         ///
         /// Called from:
-        /// - PostUpdateEverything() in this file line: 84 (if MinionItems.Count > 0)
+        /// - PostUpdateEverything() in this file line: 84 (if player.maxMinions > 0)
         /// </remarks>
-        private void MaintainMinions(Player player, AutoSummonPlayer autoSummonPlayer)
+        private void MaintainMinions(Player player, DraggableUIPanel draggableUIPanel)
         {
-            float currentMinionSlotsUsed = 0f;
+            foreach (var panel in draggableUIPanel.interactionPanels)
+            {
+                var data = panel.GetTag<InteractionPanelData>();
+                if (data?.ItemSlot?.Item == null || data.ItemSlot.Item.IsAir)
+                    continue;
 
-            // Calculate current minion slots used
+                var item = data.ItemSlot.Item;
+                if (item.shoot <= ProjectileID.None)
+                    continue;
+
+                if (!int.TryParse(data.QuantityLabel.Text.Replace("Minions: ", ""), out int desiredQuantity) || desiredQuantity <= 0)
+                    continue;
+
+                int aliveOfType = CountActiveMinionsOfType(player, item.shoot);
+                float totalMinionSlotsUsed = CountActiveMinionSlots(player);
+
+                while (aliveOfType < desiredQuantity && totalMinionSlotsUsed < player.maxMinions)
+                {
+                    SummonWithItem(player, item);
+                    aliveOfType++;
+
+                    // Recalculate actual slot usage since minionSlots cost varies per minion type
+                    totalMinionSlotsUsed = CountActiveMinionSlots(player);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Counts active minion projectiles of a specific type owned by the player.
+        /// </summary>
+        private static int CountActiveMinionsOfType(Player player, int projectileType)
+        {
+            int count = 0;
+            foreach (Projectile proj in Main.projectile)
+            {
+                if (proj.active && proj.owner == player.whoAmI && proj.minion && proj.type == projectileType)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Sums minionSlots used by all active minions owned by the player.
+        /// </summary>
+        private static float CountActiveMinionSlots(Player player)
+        {
+            float slots = 0f;
             foreach (Projectile proj in Main.projectile)
             {
                 if (proj.active && proj.owner == player.whoAmI && proj.minion)
                 {
-                    currentMinionSlotsUsed += proj.minionSlots;
+                    slots += proj.minionSlots;
                 }
             }
-
-            // Summon more minions if slots are available
-            foreach (var item in autoSummonPlayer.MinionItems)
-            {
-                while (currentMinionSlotsUsed < player.maxMinions && autoSummonPlayer.MinionQuantity > 0)
-                {
-                    SummonWithItem(player, item);
-                    currentMinionSlotsUsed += item.useAnimation; // Adjusted for actual use behavior
-                    autoSummonPlayer.MinionQuantity--;
-
-                    // Recalculate minion slots
-                    currentMinionSlotsUsed = 0f;
-                    foreach (Projectile proj in Main.projectile)
-                    {
-                        if (proj.active && proj.owner == player.whoAmI && proj.minion)
-                        {
-                            currentMinionSlotsUsed += proj.minionSlots;
-                        }
-                    }
-
-                    if (currentMinionSlotsUsed >= player.maxMinions)
-                    {
-                        break;
-                    }
-                }
-            }
+            return slots;
         }
 
         /// <summary>
         /// Maintains sentry counts by summoning more if slots are available.
         /// </summary>
         /// <param name="player">The player whose sentries to maintain.</param>
-        /// <param name="autoSummonPlayer">The AutoSummonPlayer data for this player.</param>
+        /// <param name="draggableUIPanel">The UI panel holding the configured sentry items/quantities.</param>
         /// <remarks>
         /// This function:
-        /// - Counts current active sentries owned by the player
-        /// - For each item in SentryItems, summons more if slots are available
-        /// - Recalculates count after each summon to prevent over-summoning
+        /// - Reads configured items/quantities directly from sentryPanels (the source of truth
+        ///   for what the player configured), per item type
+        /// - For each panel, tops up only the shortfall between the configured quantity and how
+        ///   many of that specific projectile type are currently alive
+        /// - Stops once player.maxTurrets sentries are active in total
         ///
         /// Called from:
-        /// - PostUpdateEverything() in this file line: 89 (if SentryItems.Count > 0)
+        /// - PostUpdateEverything() in this file line: 89 (if player.maxTurrets > 0)
         /// </remarks>
-        private void MaintainSentries(Player player, AutoSummonPlayer autoSummonPlayer)
+        private void MaintainSentries(Player player, DraggableUIPanel draggableUIPanel)
         {
-            int currentSentryCount = 0;
-
-            // Count active sentries
-            for (int i = 0; i < Main.projectile.Length; i++)
+            foreach (var panel in draggableUIPanel.sentryPanels)
             {
-                var proj = Main.projectile[i];
-                if (proj.active && proj.owner == player.whoAmI && proj.sentry)
-                {
-                    currentSentryCount++;
-                }
-            }
+                var data = panel.GetTag<InteractionPanelData>();
+                if (data?.ItemSlot?.Item == null || data.ItemSlot.Item.IsAir)
+                    continue;
 
-            // Summon more sentries if slots are available
-            foreach (var item in autoSummonPlayer.SentryItems)
-            {
-                while (currentSentryCount < player.maxTurrets)
-                {
-                    SummonWithItem(player, item);
+                var item = data.ItemSlot.Item;
+                if (item.shoot <= ProjectileID.None)
+                    continue;
 
-                    // Recalculate sentry count
-                    currentSentryCount = 0;
-                    for (int i = 0; i < Main.projectile.Length; i++)
+                if (!int.TryParse(data.QuantityLabel.Text.Replace("Sentries: ", ""), out int desiredQuantity) || desiredQuantity <= 0)
+                    continue;
+
+                int aliveOfType = 0;
+                int totalSentries = 0;
+                foreach (Projectile proj in Main.projectile)
+                {
+                    if (proj.active && proj.owner == player.whoAmI && proj.sentry)
                     {
-                        var proj = Main.projectile[i];
-                        if (proj.active && proj.owner == player.whoAmI && proj.sentry)
+                        totalSentries++;
+                        if (proj.type == item.shoot)
                         {
-                            currentSentryCount++;
+                            aliveOfType++;
                         }
                     }
+                }
 
-                    if (currentSentryCount >= player.maxTurrets)
-                    {
-                        break;
-                    }
+                while (aliveOfType < desiredQuantity && totalSentries < player.maxTurrets)
+                {
+                    SummonWithItem(player, item);
+                    aliveOfType++;
+                    totalSentries++;
                 }
             }
         }
@@ -250,7 +273,8 @@ namespace AutoSummon
         /// - Creates a test projectile to check if it's a minion or sentry
         /// - For minions: Creates the projectile and adds the buff
         /// - For sentries: Checks if max sentries reached before creating
-        /// - Sets originalDamage and adds a 1-hour buff (3600 ticks)
+        /// - Sets originalDamage and adds a 1-minute buff (3600 ticks) as an initial icon;
+        /// the minion/sentry's own AI continually refreshes it while alive
         ///
         /// Called from:
         /// - DraggableUIPanel.cs line: 1057 (SummonAllItems - minions)
@@ -294,7 +318,7 @@ namespace AutoSummon
                 if (projIndex != Main.maxProjectiles)
                 {
                     Main.projectile[projIndex].originalDamage = summonItem.damage;
-                    player.AddBuff(summonItem.buffType, 3600); // Add buff for 1 hour
+                    player.AddBuff(summonItem.buffType, 3600); // Add buff for 1 minute (refreshed by the minion/sentry while alive)
                 }
             }
 
@@ -330,7 +354,7 @@ namespace AutoSummon
                 if (projIndex != Main.maxProjectiles)
                 {
                     Main.projectile[projIndex].originalDamage = summonItem.damage;
-                    player.AddBuff(summonItem.buffType, 3600); // Add buff for 1 hour
+                    player.AddBuff(summonItem.buffType, 3600); // Add buff for 1 minute (refreshed by the minion/sentry while alive)
                 }
             }
         }
